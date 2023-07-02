@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Loan Calculator</title>
+  <style>
+    body {
+      background-color: white;
+      color: black;
+    }
+
+    h1 {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .author {
+      font-size: 12px;
+      color: #777;
+      margin-top: -5px;
+    }
+  </style>
+  <script>
+    function calculateMonthlyPayment() {
+      var loanAmount = parseFloat(document.getElementById("loanAmount").value);
+      var interestRate = parseFloat(document.getElementById("interestRate").value);
+      var loanDuration = parseFloat(document.getElementById("loanDuration").value);
+      var numMonths = loanDuration * 12;
+
+      // Convert interest rate from percentage to decimal
+      interestRate = interestRate / 100;
+
+      // Credit score adjustment based on a hypothetical scoring system
+      var creditScore = parseFloat(document.getElementById("creditScore").value);
+      var creditScoreAdjustment = 1;
+      if (creditScore < 600) {
+        creditScoreAdjustment = 1.2;
+      } else if (creditScore >= 750) {
+        creditScoreAdjustment = 0.8;
+      }
+
+      var loanType = document.getElementById("loanType").value;
+
+      var monthlyInterestRate = interestRate / 12;
+      var totalPayments = numMonths;
+
+      var discountFactor = (Math.pow(1 + monthlyInterestRate, totalPayments) - 1) / (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, totalPayments));
+      var monthlyPayment = (loanAmount * creditScoreAdjustment) / discountFactor;
+
+      // Additional calculations based on loan type
+      switch (loanType) {
+        case "FHA Loan":
+          monthlyPayment *= 1.02; // Example adjustment for FHA loans
+          break;
+        case "Mortgage Loan":
+          monthlyPayment *= 0.98; // Example adjustment for mortgage loans
+          break;
+        case "VA Loan":
+          monthlyPayment *= 1.01; // Example adjustment for VA loans
+          break;
+        case "Adjustable Rate Loan":
+          monthlyPayment *= 1.05; // Example adjustment for adjustable rate loans
+          break;
+        case "Term Loan":
+          // No additional adjustment for term loans
+          break;
+      }
+
+      document.getElementById("monthlyPayment").innerHTML = "Monthly Payment: $" + monthlyPayment.toFixed(2);
+    }
+  </script>
+</head>
+<body>
+  <h1 style="font-size: 14px; margin-bottom: 5px;">Loan Calculator</h1>
+  <p class="author" style="font-size: 12px; margin-top: -5px;">By Mitchell Singletary</p>
+  <label for="creditScore">Credit Score:</label>
+  <input type="number" id="creditScore" step="1" min="300" max="850">
+  <br>
+  <label for="loanAmount">Loan Amount:</label>
+  <input type="number" id="loanAmount" step="0.01">
+  <br>
+  <label for="interestRate">Interest Rate (%):</label>
+  <input type="number" id="interestRate" step="0.01">
+  <br>
+  <label for="loanDuration">Loan Duration (in years):</label>
+  <input type="number" id="loanDuration" step="1">
+  <br>
+  <label for="loanType">Loan Type:</label>
+  <select id="loanType">
+    <option value="FHA Loan">FHA Loan</option>
+    <option value="Mortgage Loan">Mortgage Loan</option>
+    <option value="VA Loan">VA Loan</option>
+    <option value="Adjustable Rate Loan">Adjustable Rate Loan</option>
+    <option value="Term Loan">Term Loan</option>
+  </select>
+  <br>
+  <button onclick="calculateMonthlyPayment()">Calculate</button>
+  <p id="monthlyPayment"></p>
+</body>
+</html>
